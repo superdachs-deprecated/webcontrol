@@ -36,7 +36,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south',
+    'network_base',
+    'ntp',
+    'pacman',
+    'setup',
+    'ssh',
 )
 
 MIDDLEWARE_CLASSES = (
