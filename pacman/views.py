@@ -6,4 +6,4 @@ from pacman.models import Repository
 def index(request):
     repos = Repository.objects.all()
     context = { 'repos': repos,}
-    return render(request, 'pacman/index.phtml')
+    return render(request, 'pacman/index.phtml', context)
