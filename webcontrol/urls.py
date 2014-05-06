@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^setup/', include('setup.urls')),
+    url(r'^network_base/', include('network_base.urls')),
 )

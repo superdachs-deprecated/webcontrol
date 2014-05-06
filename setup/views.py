@@ -8,11 +8,12 @@ import subprocess
 import shlex
 import re
 import netifaces
+from pacman.models import Repository
+from pacman.control import enable as enable_repos
 
 def firststart(request):
 
     # hostname
-    call(["cp", "/etc/hostname", "/etc/hostname.original"])
     sys_hostname = socket.gethostname() 
     if Hostname.objects.all().count() > 0:
         hostname = Hostname.objects.all()[0]
@@ -74,6 +75,27 @@ def firststart(request):
             interface.interface_name = interface.device
             interface.mac = mac
             interface.save()
+
+    # repositories
+    f = open('/etc/pacman.d/mirrorlist', 'r')
+    content = f.read().splitlines()
+    f.close()
+
+    for l in content:
+        print(l)
+
+    for l in content:
+        if re.match('^Server', l):
+            url = l.split()[2]
+            name = url
+            isActive = True
+            if not Repository.objects.filter(name=url):
+                rep = Repository()
+                rep.name = name
+                rep.url = url
+                rep.isActive = isActive
+                rep.save()
+    enable_repos()
 
     return HttpResponse("done")
 

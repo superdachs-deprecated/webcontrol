@@ -17,6 +17,8 @@ class Hostname(models.Model):
     def __str__(self):
         return self.hostname
 
+    def enable(self):
+        call(['hostname', self.hostname])
 
 class NetworkInterfaceMode(models.Model):
     mode_name = models.CharField(max_length=10) #e.g. dhcp, static
@@ -43,6 +45,8 @@ class NetworkInterfaceMode(models.Model):
         f.write('Gateway=' + nic.gateway + '\n')
         f.close()
         
+    def enable(self, nic):
+        call('netctl', 'switch-to', nic.interface_name + '_' + self.mode_name)
 
     def __unicode__(self):
         return self.mode_name
@@ -64,6 +68,9 @@ class NetworkInterface(models.Model):
         self.mode.genConfig(self)
         super(NetworkInterface, self).save()
     
+    def enable(self):
+        self.mode.enable(self)
+
     def __unicode__(self):
         return self.interface_name
 
