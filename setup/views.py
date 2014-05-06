@@ -7,6 +7,7 @@ from subprocess import Popen
 import subprocess
 import shlex
 import re
+import netifaces
 
 def firststart(request):
 
@@ -27,6 +28,8 @@ def firststart(request):
     out,err = subprocess.Popen(args, stdout = subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
     nic_names = out.split()
+
+    nic_names = netifaces.interfaces()
 
     if not NetworkInterfaceMode.objects.filter(mode_name='static'):
         mode = NetworkInterfaceMode()
@@ -51,15 +54,28 @@ def firststart(request):
 
     for nic_name in nic_names:
         if not NetworkInterface.objects.filter(device = nic_name):
+
+            gateway = 'unknown'
+
+            gws = netifaces.gateways()
+            gw = gws['default'][netifaces.AF_INET]
+            if gw[1] == nic_name:
+                gateway = gw[0]
+
+            addresses = netifaces.ifaddresses(nic_name)
+            mac = addresses[netifaces.AF_LINK][0]['addr']
+            ip = addresses[netifaces.AF_INET][0]['addr']
+            netmask = addresses[netifaces.AF_INET][0]['netmask']
+
             interface = NetworkInterface()
-            interface.device = nic_name.strip().decode('ascii')
+            interface.device = nic_name
             interface.mode = NetworkInterfaceMode.objects.filter(mode_name='unknown')[0]
             interface.interface_description = "auto generated interface from system"
-            interface.ip_address = "unknown"
-            interface.netmask = "unknown"
-            interface.gateway = "unknown"
+            interface.ip_address = ip
+            interface.netmask = netmask
+            interface.gateway = gateway
             interface.interface_name = interface.device
-            interface.mac = "unknown"
+            interface.mac = mac
 
             interface.save()
 
