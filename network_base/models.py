@@ -10,9 +10,22 @@ class Hostname(models.Model):
         call(["echo", str(self.hostname), ">>", "/etc/hostname"])
         super(Hostname, self).save()
 
+    def __unicode__(self):
+        return self.hostname
+    
+    def __str__(self):
+        return self.hostname
+
+
 class NetworkInterfaceMode(models.Model):
     mode_name = models.CharField(max_length=10) #e.g. dhcp, static
     mode_description = models.TextField()
+
+    def __unicode__(self):
+        return self.mode_name
+
+    def __str__(self):
+        return self.mode_name
 
 class NetworkInterface(models.Model):
     device = models.CharField(max_length=200) #e.g. /dev/eth0
@@ -23,3 +36,9 @@ class NetworkInterface(models.Model):
     netmask = models.CharField(max_length=15)
     gateway = models.CharField(max_length=15)
     mac = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.interface_name
+
+    def __str__(self):
+        return self.interface_name

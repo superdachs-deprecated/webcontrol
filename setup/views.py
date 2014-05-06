@@ -28,16 +28,32 @@ def firststart(request):
 
     nic_names = out.split()
 
-    mode = NetworkInterfaceMode()
-    mode.mode_name = "default"
-    mode.mode_description = "default nic mode"
-    mode.save()
+    if not NetworkInterfaceMode.objects.filter(mode_name='static'):
+        mode = NetworkInterfaceMode()
+        mode.mode_name = "static"
+        mode.mode_description = "static ip configuration"
+        mode.save()
+    if not NetworkInterfaceMode.objects.filter(mode_name='autoconf'):
+        mode = NetworkInterfaceMode()
+        mode.mode_name = "autoconf"
+        mode.mode_description = "autoconf ip configuration"
+        mode.save()
+    if not NetworkInterfaceMode.objects.filter(mode_name='dhcp'):
+        mode = NetworkInterfaceMode()
+        mode.mode_name = "dhcp"
+        mode.mode_description = "get ip adress from dhcp server"
+        mode.save()
+    if not NetworkInterfaceMode.objects.filter(mode_name='unknown'):
+        mode = NetworkInterfaceMode()
+        mode.mode_name = "unknown"
+        mode.mode_description = "unknown interface mode"
+        mode.save()
 
     for nic_name in nic_names:
         if not NetworkInterface.objects.filter(device = nic_name):
             interface = NetworkInterface()
             interface.device = nic_name.strip().decode('ascii')
-            interface.mode = mode
+            interface.mode = NetworkInterfaceMode.objects.filter(mode_name='unknown')[0]
             interface.interface_description = "auto generated interface from system"
             interface.ip_address = "unknown"
             interface.netmask = "unknown"
