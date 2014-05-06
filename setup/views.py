@@ -36,23 +36,15 @@ def firststart(request):
         mode.mode_name = "static"
         mode.mode_description = "static ip configuration"
         mode.save()
-    if not NetworkInterfaceMode.objects.filter(mode_name='autoconf'):
-        mode = NetworkInterfaceMode()
-        mode.mode_name = "autoconf"
-        mode.mode_description = "autoconf ip configuration"
-        mode.save()
     if not NetworkInterfaceMode.objects.filter(mode_name='dhcp'):
         mode = NetworkInterfaceMode()
         mode.mode_name = "dhcp"
         mode.mode_description = "get ip adress from dhcp server"
         mode.save()
-    if not NetworkInterfaceMode.objects.filter(mode_name='unknown'):
-        mode = NetworkInterfaceMode()
-        mode.mode_name = "unknown"
-        mode.mode_description = "unknown interface mode"
-        mode.save()
-
+    
     for nic_name in nic_names:
+        if nic_name == 'lo':
+            continue
         if not NetworkInterface.objects.filter(device = nic_name):
 
             gateway = 'unknown'
@@ -69,14 +61,14 @@ def firststart(request):
 
             interface = NetworkInterface()
             interface.device = nic_name
-            interface.mode = NetworkInterfaceMode.objects.filter(mode_name='unknown')[0]
+            interface.mode = NetworkInterfaceMode.objects.filter(mode_name='dhcp')[0]
             interface.interface_description = "auto generated interface from system"
             interface.ip_address = ip
             interface.netmask = netmask
             interface.gateway = gateway
             interface.interface_name = interface.device
             interface.mac = mac
-
+            interface.mode.genConfig(interface)
             interface.save()
 
     return HttpResponse("done")
