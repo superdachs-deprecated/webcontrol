@@ -60,6 +60,10 @@ class NetworkInterface(models.Model):
     gateway = models.CharField(max_length=15)
     mac = models.CharField(max_length=100)
 
+    def save(self):
+        self.mode.genConfig(self)
+        super(NetworkInterface, self).save()
+    
     def __unicode__(self):
         return self.interface_name
 

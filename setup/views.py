@@ -53,11 +53,16 @@ def firststart(request):
             gw = gws['default'][netifaces.AF_INET]
             if gw[1] == nic_name:
                 gateway = gw[0]
-
             addresses = netifaces.ifaddresses(nic_name)
             mac = addresses[netifaces.AF_LINK][0]['addr']
-            ip = addresses[netifaces.AF_INET][0]['addr']
-            netmask = addresses[netifaces.AF_INET][0]['netmask']
+            try:
+                ip = addresses[netifaces.AF_INET][0]['addr']
+            except Exception:
+                ip = 'none'
+            try:
+                netmask = addresses[netifaces.AF_INET][0]['netmask']
+            except Exception:
+                netmask = 'none'
 
             interface = NetworkInterface()
             interface.device = nic_name
@@ -68,7 +73,6 @@ def firststart(request):
             interface.gateway = gateway
             interface.interface_name = interface.device
             interface.mac = mac
-            interface.mode.genConfig(interface)
             interface.save()
 
     return HttpResponse("done")
