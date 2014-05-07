@@ -92,7 +92,7 @@ def firststart(request):
             if not Repository.objects.filter(name=url):
                 rep = Repository()
                 rep.name = name
-                rep.url = url
+                rep.repourl = url
                 rep.isActive = isActive
                 rep.save()
     enable_repos()

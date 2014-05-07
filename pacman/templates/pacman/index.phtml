@@ -1,0 +1,12 @@
+<h1>Pacman</h1>
+<h2>Repositories</h2>
+<table>
+ <tr>
+  <th>Repository</th><th>Active</th>
+ </tr>
+{% for repo in repos %}
+ <tr>
+  <td>{{ repo.repourl }}</td><td>{{ repo.isActive }}</td>
+ </tr>
+{% endfor %}
+</table>

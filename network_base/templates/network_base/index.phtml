@@ -1,0 +1,15 @@
+<h1>Networking Basic</h1>
+<h2>Hostname</h2>
+<p>Hostname: {{ hostname.hostname }}</p>
+<h2>Network Interfaces</h2>
+<table>
+ <tr>
+  <th>Interface Name</th><th>Interface Mode</th><th>IP Address</th><th>Netmask</th><th>Gateway</th><th>MAC Address</th>
+ </tr>
+{% for nic in nics %}
+ <tr>
+  <td>{{ nic.interface_name }}</td><td>{{ nic.mode.mode_name }}</td><td>{{ nic.ip_address }}</td><td>{{ nic.netmask }}</td><td>{{ nic.gateway }}</td><td>{{ nic.mac }}</td>
+ </tr>
+{% endfor %}
+</table>
+
