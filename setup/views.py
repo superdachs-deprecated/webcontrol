@@ -14,7 +14,7 @@ from pacman.control import enable as enable_repos
 def firststart(request):
 
     # hostname
-    sys_hostname = socket.gethostname() 
+    sys_hostname = socket.gethostname()
     if Hostname.objects.all().count() > 0:
         hostname = Hostname.objects.all()[0]
     else:
@@ -23,7 +23,7 @@ def firststart(request):
     hostname.save()
 
     # nics
-    
+
     cmd = "ls /sys/class/net/"
     args = shlex.split(cmd)
     out,err = subprocess.Popen(args, stdout = subprocess.PIPE, stderr=subprocess.PIPE).communicate()
@@ -42,7 +42,7 @@ def firststart(request):
         mode.mode_name = "dhcp"
         mode.mode_description = "get ip adress from dhcp server"
         mode.save()
-    
+
     for nic_name in nic_names:
         if nic_name == 'lo':
             continue
@@ -95,7 +95,5 @@ def firststart(request):
                 rep.repourl = url
                 rep.isActive = isActive
                 rep.save()
-    enable_repos()
 
     return HttpResponse("done")
-
